@@ -1,0 +1,88 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+df = pd.read_csv('bestsellers.csv')
+
+# Summary statistics
+num_books = len(df)
+num_authors = len(df['Author'].unique())
+num_genres = len(df['Genre'].unique())
+avg_price = df['Price'].mean()
+avg_rating = df['User Rating'].mean()
+
+# Set up the grid for visualization
+fig = plt.figure(figsize=(25, 25))
+gs = fig.add_gridspec(nrows=3, ncols=2, height_ratios=[3, 1, 1])
+
+# Plot 1: Top 10 Authors with the Most Bestselling Books
+p1 = fig.add_subplot(gs[0, 0])
+top_authors = df['Author'].value_counts().head(10)
+sns.barplot(x=top_authors.index, y=top_authors.values, ax=p1)
+p1.set_xlabel('Author')
+p1.set_ylabel('Number of Bestselling Books')
+p1.set_title('Top 10 Authors with the Most Bestselling Books')
+p1.set_xticklabels(p1.get_xticklabels(), rotation=20, ha='right')
+
+# Plot 2: Distribution of Book Genres
+p2 = fig.add_subplot(gs[0, 1])
+genre_counts = df['Genre'].value_counts()
+sns.barplot(x=genre_counts.index, y=genre_counts.values, ax=p2)
+p2.set_xlabel('Genre')
+p2.set_ylabel('Number of Books')
+p2.set_title('Distribution of Book Genres')
+
+# Plot 3: Year-wise Book Sales
+p3 = fig.add_subplot(gs[1, 0])
+year_sales = df.groupby('Year')['Reviews'].sum()
+sns.lineplot(x=year_sales.index, y=year_sales.values, ax=p3)
+p3.set_xlabel('Year')
+p3.set_ylabel('Total Sales')
+p3.set_title('Year-wise Book Sales')
+
+# Plot 4: Distribution of Fiction vs. Non-Fiction Books
+p4 = fig.add_subplot(gs[1, 1])
+fiction_vs_nonfiction = df['Genre'].value_counts()
+p4.pie(fiction_vs_nonfiction, labels=fiction_vs_nonfiction.index, autopct='%1.1f%%')
+p4.set_title('Distribution of Fiction vs. Non-Fiction Books')
+
+# Plot 5: User Rating vs. Price
+p5 = fig.add_subplot(gs[2, 0])
+sns.scatterplot(x=df['User Rating'], y=df['Price'], ax=p5)
+p5.set_xlabel('User Rating')
+p5.set_ylabel('Price')
+p5.set_title('User Rating vs. Price')
+
+# Plot 6: Average User Ratings by Genre
+p6 = fig.add_subplot(gs[2, 1])
+avg_ratings_by_genre = df.groupby('Genre')['User Rating'].mean()
+sns.barplot(x=avg_ratings_by_genre.index, y=avg_ratings_by_genre.values, ax=p6)
+p6.set_xlabel('Genre')
+p6.set_ylabel('Average User Rating')
+p6.set_title('Average User Ratings by Genre')
+
+# Add a title and subtitle to the visualization
+fig.suptitle('Amazon Top 50 Bestselling Books Analysis',
+             fontsize=16, fontweight='bold')
+fig.text(0.8, 0.98, 'Gowshik Naidu Thota (ID: 21079437)',
+         ha='center', fontsize=12, fontweight='bold')
+
+
+# Add a textbox with explanation
+textstr = '''The analysis of the Amazon Top 50 Bestselling Books dataset reveals intriguing insights into the book market. We find that certain authors dominate the bestselling category, capturing a significant portion of the market share. 
+The dataset also showcases a diverse range of book genres, highlighting the readers' varied interests. Over the years, book sales have experienced fluctuations, indicating the dynamic nature of the industry. 
+Fiction books appear to be more prevalent than non-fiction books, suggesting a higher demand for storytelling. Interestingly, the analysis indicates that higher book prices do not always guarantee higher user ratings, 
+suggesting that factors other than price influence readers' perceptions. Finally, different genres receive varying average user ratings, indicating the preferences and expectations of readers across genres.
+Top 10 Authors with the Most Bestselling Books -This plot shows the top 10 authors who have the most bestselling books in the dataset. It provides an overview of the authors who have made a significant impact in the book market.
+Distribution of Book Genres -This plot displays the distribution of book genres in the dataset. It helps us understand the popularity of different genres and the variety of books available in the bestselling category.
+Year-wise Book Sales -This plot showcases the trend of book sales over the years. By observing the line plot, we can identify any patterns, fluctuations, or growth in the sales of bestselling books.
+Pie Chart -This pie chart illustrates the proportion of fiction and non-fiction books in the dataset. It gives us an idea of the preference of readers when it comes to choosing between fiction and non-fiction genres.
+User Rating vs. Price -This scatter plot visualizes the relationship between user ratings and book prices. By examining the plot, we can identify any correlation between higher ratings and book prices, indicating the readers' perception of value.
+Average User Ratings by Genre -This bar plot compares the average user ratings of different book genres. It helps us understand which genres tend to receive higher ratings and which genres have room for improvement.'''
+
+fig.text(0.5, 0.9, textstr, ha='center', fontsize=12)
+
+# replacing plt.savefig('21079437.png', dpi=300)
+plt.show()
